@@ -2,7 +2,7 @@
 node_modules
 /dist
 curso-gratuito-vue3
-
+/curso-gratuito-vue3
 # local env files
 .env.local
 .env.*.local
