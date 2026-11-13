@@ -60,50 +60,65 @@ justify-center">
 </template>
 
 <script>
-    export default{
+    import { ref } from 'vue'
+    import { useStore } from 'vuex'
+    export default {
         props: {
             todo:{
                 type: Object,
                 default: () => ({}),
                 
-            }
+            },
         },
 
-        data() {
-            return {
-                title: this.todo.title,
-                isCompleted: this.todo.completed
-            }
-        },
+        setup(props) {
+            const title = ref(props.todo.title)
+            const isCompleted = ref(props.todo.completed)
+            const store = useStore()
 
-        methods: {
-             updateTodo(){
+            //onDelete
+             const onDelete = () =>  {
+                store.dispatch('deleteTodo', props.todo.id)
+            }
+
+            //updateTodo
+            const updateTodo = () => {
                 const payload = {
-                    id: this.todo.id,
+                    id: props.todo.id,
                     data: { 
-                         title: this.title,
-                         completed: this.isCompleted
+                         title: title.value,
+                         completed: isCompleted.value
                          }
                 }
-                this.$store.dispatch('UpdateTodo', payload)
-            },
+                store.dispatch('UpdateTodo', payload)
+            }
+            //onTitleChange
+            const onTitleChange = () => {
 
-            onTitleChange(){
-
-                if(!this.title) {
+                if(!title.value) {
                     return
                 }
-                this.updateTodo()
+                updateTodo()
 
-            },
-            onCheckClick() {
-                this.isCompleted = !this.isCompleted
-                this.updateTodo()
-            },
-
-            onDelete() {
-                this.$store.dispatch('deleteTodo', this.todo.id)
             }
-        }
+
+            //onCheckClick
+            const onCheckClick = () => {
+                isCompleted.value = !isCompleted.value
+                updateTodo()
+            }
+
+            return {
+                title,
+                isCompleted,
+                onDelete,
+                onTitleChange,
+                onCheckClick
+                
+            }
+        },
+
+            
+     
     }
 </script>
